@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taste Explorer | Restaurant Reviews</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#2E4057',
+                        neutral: '#F7F7F7',
+                        dark: '#1A1A1A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+            .card-hover {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .review {
+                @apply bg-neutral rounded-lg p-6 shadow mb-6 card-hover;
+            }
+            .menu-item {
+                @apply border-b border-gray-200 py-4 last:border-0;
+            }
+            .menu-category {
+                @apply text-xl font-bold text-secondary mb-4 mt-6 first:mt-0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-neutral text-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                <i class="fa fa-cutlery text-primary text-2xl"></i>
+                <span class="font-bold text-xl text-secondary">Taste Explorer</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-gray-600 hover:text-primary transition-custom">Restaurants</a>
+                <a href="#" class="text-gray-600 hover:text-primary transition-custom">Cuisines</a>
+                <a href="#" class="text-gray-600 hover:text-primary transition-custom">About</a>
+                <a href="#" class="text-gray-600 hover:text-primary transition-custom">Contact</a>
+            </div>
+            <button class="md:hidden text-gray-600">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="pt-16">
+        <!-- 餐厅图片区域 - 已更新为相对路径的封面图 -->
+        <section class="relative h-[70vh] min-h-[500px] overflow-hidden">
+            <img src="assets/noodles.jpg" alt="Ramen Haven cover showing delicious ramen bowl with chopsticks" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6 md:p-12">
+                <div class="container mx-auto">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white text-shadow mb-2">Ramen Haven</h1>
+                    <div class="flex items-center space-x-2 text-white/90 mb-4">
+                        <i class="fa fa-map-marker"></i>
+                        <span>Just 2 km from your location</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <div class="text-yellow-400 flex">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                            </div>
+                            <span class="ml-2 text-white">4.5 (846 reviews)</span>
+                        </div>
+                        <div class="flex items-center text-white">
+                            <i class="fa fa-clock-o mr-2"></i>
+                            <span>Open until 11:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 预订选择区域 -->
+        <section class="bg-white py-10 shadow-md">
+            <div class="container mx-auto px-4">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-secondary mb-8 text-center">Would you like to book a table?</h2>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <!-- 预订按钮 -->
+                        <button 
+                            onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdf2MT3q6hlZqJBklyHdlvjFauzL2Lb2Z9G0YLPzPxR52Yvqw/formResponse?entry.12345=Reserve', '_blank', 'width=800,height=600,top=100,left=100'); document.getElementById('bookingModal').classList.remove('hidden')"
+                            class="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-custom flex-1 max-w-[200px] mx-auto"
+                        >
+                            Book a Table
+                        </button>
+                        
+                        <!-- 不预订按钮 -->
+                        <button 
+                            onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScxOhxXMDdM13hO1rTUGagRICne_-trGS2AVbhF4XwaJ4oz0g/formResponse?entry.67890=NotReserve', '_blank', 'width=800,height=600,top=100,left=100'); document.getElementById('skipModal').classList.remove('hidden')"
+                            class="bg-gray-200 hover:bg-gray-300 text-dark font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-custom flex-1 max-w-[200px] mx-auto"
+                        >
+                            Not Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 菜单区域 -->
+        <section class="py-12 bg-neutral">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-center mb-8">
+                        <button id="menuToggle" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-custom flex items-center">
+                            <i class="fa fa-bars mr-2"></i>
+                            <span>View Our Menu</span>
+                        </button>
+                    </div>
+                    
+                    <!-- 菜单内容 - 默认隐藏 -->
+                    <div id="menuContent" class="bg-white rounded-xl shadow-lg p-6 md:p-8 hidden">
+                        <h3 class="text-2xl font-bold text-secondary mb-6 text-center">Our Menu</h3>
+                        
+                        <!-- 拉面类 -->
+                        <h4 class="menu-category">Signature Ramen</h4>
+                        <div class="space-y-4">
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Miso Ramen</span>
+                                    <p class="text-gray-600 text-sm">Rich miso broth with chashu pork, menma, nori, and soft-boiled egg</p>
+                                </div>
+                                <span class="font-medium">$14.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Shoyu Ramen</span>
+                                    <p class="text-gray-600 text-sm">Soy sauce based broth with chashu pork, negi, nori, and bamboo shoots</p>
+                                </div>
+                                <span class="font-medium">$13.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Tonkotsu Ramen</span>
+                                    <p class="text-gray-600 text-sm">Creamy pork bone broth with chashu pork, ajitama, and kikurage</p>
+                                </div>
+                                <span class="font-medium">$15.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Spicy Miso Ramen</span>
+                                    <p class="text-gray-600 text-sm">Miso broth with chili oil, chashu pork, and extra vegetables</p>
+                                </div>
+                                <span class="font-medium">$15.49</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Vegetarian Ramen</span>
+                                    <p class="text-gray-600 text-sm">Umami-rich vegetable broth with seasonal vegetables and tofu</p>
+                                </div>
+                                <span class="font-medium">$12.99</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 小吃类 -->
+                        <h4 class="menu-category">Appetizers</h4>
+                        <div class="space-y-4">
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Gyoza (6 pcs)</span>
+                                    <p class="text-gray-600 text-sm">Pan-fried dumplings with pork and vegetable filling</p>
+                                </div>
+                                <span class="font-medium">$6.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Karaage</span>
+                                    <p class="text-gray-600 text-sm">Japanese-style fried chicken with special seasoning</p>
+                                </div>
+                                <span class="font-medium">$8.49</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Edamame</span>
+                                    <p class="text-gray-600 text-sm">Steamed soybeans with sea salt</p>
+                                </div>
+                                <span class="font-medium">$4.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Takoyaki (6 pcs)</span>
+                                    <p class="text-gray-600 text-sm">Octopus balls with bonito flakes and takoyaki sauce</p>
+                                </div>
+                                <span class="font-medium">$7.99</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 饮料类 -->
+                        <h4 class="menu-category">Beverages</h4>
+                        <div class="space-y-4">
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Asahi Beer</span>
+                                    <p class="text-gray-600 text-sm">Japanese lager</p>
+                                </div>
+                                <span class="font-medium">$5.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Green Tea</span>
+                                    <p class="text-gray-600 text-sm">Hot or iced</p>
+                                </div>
+                                <span class="font-medium">$2.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Yuzu Soda</span>
+                                    <p class="text-gray-600 text-sm">Refreshing yuzu flavored soda</p>
+                                </div>
+                                <span class="font-medium">$3.99</span>
+                            </div>
+                            <div class="menu-item flex justify-between items-center">
+                                <div>
+                                    <span class="font-semibold">Ramune</span>
+                                    <p class="text-gray-600 text-sm">Japanese marble soda</p>
+                                </div>
+                                <span class="font-medium">$3.49</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI 评论总结 -->
+        <section class="py-12 bg-neutral">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-xl md:text-2xl font-bold text-secondary mb-4">AI-generated summary of reviews</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        Most diners emphasized the restaurant’s objective quality and consistency. They frequently mentioned the balanced broth, firm noodles, and well-cooked pork. Service was described as fast and efficient, and the food usually arrived hot and fresh. A few guests noted small portions or limited menu choices, yet overall standards of preparation, hygiene, and reliability were considered high. In short, the restaurant performs strongly on tangible quality cues such as taste balance, texture, and kitchen performance.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 用户评论 -->
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl md:text-3xl font-bold text-secondary text-center mb-10">Customer Reviews</h2>
+                
+                <div id="review-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+                    <!-- 初始评论 -->
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 1</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The broth was rich, the noodles fresh, and the cozy 24-seat space made the meal feel warm and authentic. It reminded me of ramen I had in Okinawa. Even though ordering was done by smartphone and the menu was small, everything tasted amazing. The vibe felt personal and inviting. I’d definitely come back just for that comforting atmosphere and perfect broth."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 2</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "Even at 8:40 pm the place was still packed, but the crowd and noise added to the fun. The staff worked quickly, the bar seating let us watch others enjoying their ramen, and the mood was full of energy. My pork shoyu was flavorful, and I left smiling. Waiting a bit was totally worth it for such a lively, satisfying night."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 3</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The ramen quality was excellent — broth balanced, noodles firm and chewy, pork cooked to perfection. Portion size was modest but well-prepared, and every ingredient tasted fresh. Service was fast and efficient, and the food arrived piping hot. Easily one of the best ramen spots in town, totally worth the wait."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 4</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The food was decent but not outstanding. The karaage was crispy though slightly oily, and the ramen broth lacked depth. Portion size felt small for the price, and the menu offered limited options. Service was quick and polite, but overall the meal didn’t quite live up to expectations."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 5</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The broth was oversalted, noodles were unevenly cooked, and the pork portion was too small. While the server was polite, the kitchen seemed rushed and inconsistent. For the price and long wait, the quality didn’t match the reputation. I wouldn’t recommend it unless standards improve."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 6</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The noodles were fine but the broth was too salty and there wasn’t enough meat. Service was okay, yet the overall dining felt rushed and noisy. The long wait and cramped seating made it hard to relax, and I didn’t feel it was worth the hype. The atmosphere left me more tired than satisfied."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 7</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "It was my first ramen experience and overall fun! The noodles were delicious but the pork felt bland. We waited over an hour, yet the vibe and community seating made it enjoyable. The staff were cheerful and the whole evening felt casual and social. I’ll return, just a bit earlier next time to avoid the long wait."
+                        </p>
+                    </div>
+
+                    <div class="review">
+                        <div class="mb-3">
+                            <span class="font-semibold text-secondary">Customer 8</span>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "I tried the karaage, pork shoyu, and aburasoba. Each dish was well-seasoned, and the noodles had a great bouncy texture. The menu wasn’t huge but focused on quality. The kitchen worked efficiently and the food came quickly once we were seated. Excellent ingredients and cooking consistency made the meal satisfying."
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 查看更多评论的按钮 -->
+                <div class="text-center mt-10">
+                    <button id="view-more-btn" class="inline-flex items-center justify-center bg-white border border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-6 rounded-full shadow transition-custom">
+                        <span>View More Reviews</span>
+                        <i class="fa fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fa fa-cutlery text-primary text-2xl"></i>
+                        <span class="font-bold text-xl">Taste Explorer</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Discover the best dining experiences in your city with authentic reviews from real customers.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-custom"><i class="fa fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-custom"><i class="fa fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-custom"><i class="fa fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-custom"><i class="fa fa-yelp"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom">Restaurants</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom">Cuisines</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom">Top Rated</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-custom">Latest Reviews</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fa fa-envelope mr-2"></i> info@tasteexplorer.com</li>
+                        <li class="flex items-center text-gray-400"><i class="fa fa-phone mr-2"></i> +1 (555) 123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fa fa-map-marker mr-2"></i> 456 Food Lane, Foodie City</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2023 Taste Explorer. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 隐藏的额外评论模板 -->
+    <div id="extra-reviews" style="display:none;">
+        <!-- 第一批额外评论 -->
+        <div class="batch">
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 9</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “We visited again last week — still amazing! The broth tasted even richer, and the staff remembered our order.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 10</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Tried their new vegetarian option, surprisingly flavorful. Service was fast even on a busy night.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 11</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “The ramen was good, but I’d prefer a bit more spice. The staff offered chili oil right away — very attentive.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 12</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Excellent consistency over multiple visits. The noodles always perfectly cooked, and soup temperature ideal.”
+                </p>
+            </div>
+        </div>
+        
+        <!-- 第二批额外评论 -->
+        <div class="batch" style="display:none;">
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 13</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Their lunch special is a great deal — full ramen plus a drink for under $15. Perfect for a quick business lunch.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 14</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “The chashu pork is melt-in-your-mouth amazing. I've never had better in the city. Worth every penny.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 15</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Came with a large group without reservation and they accommodated us quickly. Impressive service coordination.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 16</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Love that they offer different noodle textures. The firm option has perfect chewiness. Consistent quality every time.”
+                </p>
+            </div>
+        </div>
+        
+        <!-- 第三批额外评论 -->
+        <div class="batch" style="display:none;">
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 17</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “The garlic edamame is a must-order appetizer. Perfectly seasoned and arrives quickly after ordering.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 18</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “As someone who's lived in Tokyo, this is the most authentic ramen I've found outside of Japan. Truly impressive.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 19</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “They take allergies seriously. I have a soy allergy and they were able to accommodate with a special broth.”
+                </p>
+            </div>
+            <div class="review">
+                <div class="mb-3">
+                    <span class="font-semibold text-secondary">Customer 20</span>
+                </div>
+                <p class="text-gray-700 italic">
+                    “Late night ramen is the best! They stay busy until closing but never rush customers. Great after-movie spot.”
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预订确认模态框 -->
+    <div id="bookingModal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-check text-green-500 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary mb-2">Booking Confirmed!</h3>
+                <p class="text-gray-600 mb-6">Your booking preference has been recorded.</p>
+                <button id="confirmBooking" class="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg shadow transition-custom w-full">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 不预订确认模态框 -->
+    <div id="skipModal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-info text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary mb-2">Experience Complete</h3>
+                <p class="text-gray-600 mb-6">Your preference has been recorded. Thank you for visiting!</p>
+                <button id="confirmSkip" class="bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-6 rounded-lg shadow transition-custom w-full">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 菜单展开/收起功能
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const menuContent = document.getElementById('menuContent');
+            const buttonIcon = this.querySelector('i');
+            const buttonText = this.querySelector('span');
+            
+            if (menuContent.classList.contains('hidden')) {
+                menuContent.classList.remove('hidden');
+                buttonIcon.classList.remove('fa-bars');
+                buttonIcon.classList.add('fa-times');
+                buttonText.textContent = 'Hide Menu';
+            } else {
+                menuContent.classList.add('hidden');
+                buttonIcon.classList.remove('fa-times');
+                buttonIcon.classList.add('fa-bars');
+                buttonText.textContent = 'View Our Menu';
+            }
+        });
+
+        // 分批加载更多评论的脚本
+        let batchIndex = 0;
+        document.getElementById("view-more-btn").addEventListener("click", function() {
+            const batches = document.querySelectorAll("#extra-reviews .batch");
+            const reviewList = document.getElementById("review-list");
+            
+            if (batchIndex < batches.length) {
+                // 克隆当前批次的评论并添加到评论列表
+                const clone = batches[batchIndex].cloneNode(true);
+                clone.style.display = "block";
+                
+                // 将克隆的评论添加到列表中
+                Array.from(clone.children).forEach(review => {
+                    reviewList.appendChild(review);
+                });
+                
+                batchIndex++;
+                
+                // 如果所有批次都已加载，隐藏按钮
+                if (batchIndex === batches.length) {
+                    this.style.display = "none";
+                }
+            }
+        });
+
+        // 关闭预订/不预订模态框按钮事件
+        document.getElementById('confirmBooking').addEventListener('click', () => {
+            document.getElementById('bookingModal').classList.add('hidden');
+        });
+
+        document.getElementById('confirmSkip').addEventListener('click', () => {
+            document.getElementById('skipModal').classList.add('hidden');
+        });
+
+        // 点击模态框外部关闭
+        document.getElementById('bookingModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('bookingModal')) {
+                document.getElementById('bookingModal').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('skipModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('skipModal')) {
+                document.getElementById('skipModal').classList.add('hidden');
+            }
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-2', 'shadow');
+                nav.classList.remove('py-3');
+            } else {
+                nav.classList.add('py-3');
+                nav.classList.remove('py-2', 'shadow');
+            }
+        });
+    </script>
+</body>
+</html>
+    
